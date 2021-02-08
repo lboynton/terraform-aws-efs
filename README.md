@@ -149,10 +149,11 @@ Available targets:
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | access\_points | A map of the access points you would like in your EFS volume | `map(map(map(any)))` | `{}` | no |
+| additional\_security\_groups | List of additional Security Group IDs to be allowed to connect to EFS | `list(string)` | `[]` | no |
 | additional\_tag\_map | Additional tags for appending to tags\_as\_list\_of\_maps. Not added to `tags`. | `map(string)` | `{}` | no |
-| allowed\_cidr\_blocks | The CIDR blocks from which to allow `ingress` traffic to the EFS | `list(string)` | `[]` | no |
 | attributes | Additional attributes (e.g. `1`) | `list(string)` | `[]` | no |
 | context | Single object for setting entire context at once.<br>See description of individual variables for details.<br>Leave string and numeric variables as `null` to use default value.<br>Individual variable settings (non-null) override settings in context object,<br>except for attributes, tags, and additional\_tag\_map, which are merged. | `any` | <pre>{<br>  "additional_tag_map": {},<br>  "attributes": [],<br>  "delimiter": null,<br>  "enabled": true,<br>  "environment": null,<br>  "id_length_limit": null,<br>  "label_key_case": null,<br>  "label_order": [],<br>  "label_value_case": null,<br>  "name": null,<br>  "namespace": null,<br>  "regex_replace_chars": null,<br>  "stage": null,<br>  "tags": {}<br>}</pre> | no |
+| create\_security\_group | Create Security Group | `bool` | `true` | no |
 | delimiter | Delimiter to be used between `namespace`, `environment`, `stage`, `name` and `attributes`.<br>Defaults to `-` (hyphen). Set to `""` to use no delimiter at all. | `string` | `null` | no |
 | dns\_name | Name of the CNAME record to create | `string` | `""` | no |
 | enabled | Set to false to prevent the module from creating any resources | `bool` | `null` | no |
@@ -170,7 +171,8 @@ Available targets:
 | provisioned\_throughput\_in\_mibps | The throughput, measured in MiB/s, that you want to provision for the file system. Only applicable with `throughput_mode` set to provisioned | `number` | `0` | no |
 | regex\_replace\_chars | Regex to replace chars with empty string in `namespace`, `environment`, `stage` and `name`.<br>If not set, `"/[^a-zA-Z0-9-]/"` is used to remove all characters other than hyphens, letters and digits. | `string` | `null` | no |
 | region | AWS Region | `string` | n/a | yes |
-| security\_groups | Security group IDs to allow access to the EFS | `list(string)` | n/a | yes |
+| security\_group\_rules | A list of maps of Security Group rules. <br>The values of map is fully complated with `aws_security_group_rule` resource. <br>To get more info see https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule . | `list(any)` | <pre>[<br>  {<br>    "cidr_blocks": [<br>      "0.0.0.0/0"<br>    ],<br>    "from_port": 0,<br>    "protocol": "-1",<br>    "to_port": 65535,<br>    "type": "egress"<br>  }<br>]</pre> | no |
+| security\_group\_use\_name\_prefix | Whether to create a default Security Group with unique name beginning with the normalized prefix. | `bool` | `false` | no |
 | stage | Stage, e.g. 'prod', 'staging', 'dev', OR 'source', 'build', 'test', 'deploy', 'release' | `string` | `null` | no |
 | subnets | Subnet IDs | `list(string)` | n/a | yes |
 | tags | Additional tags (e.g. `map('BusinessUnit','XYZ')` | `map(string)` | `{}` | no |

@@ -1,12 +1,39 @@
-variable "security_groups" {
-  type        = list(string)
-  description = "Security group IDs to allow access to the EFS"
+
+variable "create_security_group" {
+  type        = bool
+  description = "Create Security Group"
+  default     = true
 }
 
-variable "allowed_cidr_blocks" {
+variable "security_group_rules" {
+  type = list(any)
+  default = [
+    {
+      type        = "egress"
+      from_port   = 0
+      to_port     = 65535
+      protocol    = "-1"
+      cidr_blocks = ["0.0.0.0/0"]
+      description = "Allow ALL egress traffic"
+    }
+  ]
+  description = <<-EOT
+    A list of maps of Security Group rules. 
+    The values of map is fully complated with `aws_security_group_rule` resource. 
+    To get more info see https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule .
+  EOT
+}
+
+variable "security_group_use_name_prefix" {
+  type        = bool
+  default     = false
+  description = "Whether to create a default Security Group with unique name beginning with the normalized prefix."
+}
+
+variable "additional_security_groups" {
+  description = "List of additional Security Group IDs to be allowed to connect to EFS"
   type        = list(string)
   default     = []
-  description = "The CIDR blocks from which to allow `ingress` traffic to the EFS"
 }
 
 variable "access_points" {
